@@ -83,8 +83,8 @@ def MinEditDistance(x, y, C, editmatrices, normalize=False):
                                 C[2] + H[i - 1][j - 1], C[3] + H[i - 2][j - 2])
         D /= H[m - 1][n - 1] * hmean(*C)
 
-    backtrace = [[('--' if x[0] else '  ') + ('||' if x[1] else '  ') +
-                  ('//' if x[2] else '  ') + ('<>' if x[3] else '  ')
+    backtrace = [[('-' if x[0] else ' ') + ('|' if x[1] else ' ') +
+                  ('/' if x[2] else ' ') + ('\\' if x[3] else ' ')
                   for x in y] for y in backtrace]
 
     # return value is the final minimum edit distnce D(m,n)
