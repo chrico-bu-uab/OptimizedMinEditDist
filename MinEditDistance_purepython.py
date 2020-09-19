@@ -18,7 +18,7 @@ def hmean(*Z):
     return 0
 
 
-def MinEditDistance(x, y, C, editmatrices, normalize=False):
+def MinEditDistance(x, y, C, editmatrices=None, normalize=False, isDamerau=False):
 
     if editmatrices is not None:
         for edit, matrix in editmatrices.items():
@@ -53,16 +53,16 @@ def MinEditDistance(x, y, C, editmatrices, normalize=False):
                 down = D[i - 1][j] + C[0]
                 left = D[i][j - 1] + C[1]
                 diag = D[i - 1][j - 1] + C[2] * (x[i] != y[j])
-                if (i > 1) and (j > 1) and (x[i - 1]
-                                            == y[j]) and (x[i] == y[j - 1]):
+                if isDamerau and (i > 1) and (j > 1) and (
+                        x[i - 1] == y[j]) and (x[i] == y[j - 1]):
                     swap = D[i - 2][j - 2] + C[3]
             else:
                 # compute distances using lookup tables
                 down = D[i - 1][j] + C[0] * editmatrices['del'][x[i]][y[j]]
                 left = D[i][j - 1] + C[1] * editmatrices['add'][x[i]][y[j]]
                 diag = D[i - 1][j - 1] + C[2] * editmatrices['sub'][x[i]][y[j]]
-                if (i > 1) and (j > 1) and (x[i - 1]
-                                            == y[j]) and (x[i] == y[j - 1]):
+                if isDamerau and (i > 1) and (j > 1) and (
+                        x[i - 1] == y[j]) and (x[i] == y[j - 1]):
                     swap = D[i - 2][j -
                                     2] + C[3] * editmatrices['rev'][x[i]][y[j]]
             # assign minimum distance to current cell

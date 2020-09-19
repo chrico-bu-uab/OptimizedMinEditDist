@@ -10,7 +10,7 @@ def hmean(*Z):
     return 1 / np.mean(1 / np.array(Z))
 
 
-def MinEditDistance(x, y, C, editmatrices, normalize=False):
+def MinEditDistance(x, y, C, editmatrices=None, normalize=False, isDamerau=False):
 
     if editmatrices is not None:
         for edit, matrix in editmatrices.items():
@@ -43,16 +43,16 @@ def MinEditDistance(x, y, C, editmatrices, normalize=False):
                 down = D[i - 1, j] + C[0]
                 left = D[i, j - 1] + C[1]
                 diag = D[i - 1, j - 1] + C[2] * (x[i] != y[j])
-                if (i > 1) and (j > 1) and (x[i - 1]
-                                            == y[j]) and (x[i] == y[j - 1]):
+                if isDamerau and (i > 1) and (j > 1) and (
+                        x[i - 1] == y[j]) and (x[i] == y[j - 1]):
                     swap = D[i - 2, j - 2] + C[3]
             else:
                 # compute distances using lookup tables
                 down = D[i - 1, j] + C[0] * editmatrices['del'][x[i]][y[j]]
                 left = D[i, j - 1] + C[1] * editmatrices['add'][x[i]][y[j]]
                 diag = D[i - 1, j - 1] + C[2] * editmatrices['sub'][x[i]][y[j]]
-                if (i > 1) and (j > 1) and (x[i - 1]
-                                            == y[j]) and (x[i] == y[j - 1]):
+                if isDamerau and (i > 1) and (j > 1) and (
+                        x[i - 1] == y[j]) and (x[i] == y[j - 1]):
                     swap = D[i - 2,
                              j - 2] + C[3] * editmatrices['rev'][x[i]][y[j]]
             # assign minimum distance to current cell
@@ -84,8 +84,8 @@ def MinEditDistance(x, y, C, editmatrices, normalize=False):
         D /= H[m - 1][n - 1] * hmean(*C)
 
     backtrace = [[('-' if x[0] else ' ') + ('|' if x[1] else ' ') +
-                  ('/' if x[2] else ' ') + ('\\' if x[3] else ' ')
-                  for x in y] for y in backtrace]
+                  ('/' if x[2] else ' ') + ('\\' if x[3] else ' ') for x in y]
+                 for y in backtrace]
 
     # return value is the final minimum edit distnce D(m,n)
     out = D[m - 1][n - 1]
